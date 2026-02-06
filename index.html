@@ -1,131 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ShopEase</title>
-<style>
-body { margin:0; font-family: Arial,sans-serif; text-align:center;}
-.hidden{display:none;}
-.center{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;}
-h1{font-size:42px;}
-p{font-size:22px;max-width:90%;}
-input{padding:14px;margin:10px;font-size:18px;width:260px;}
-button{padding:14px 30px;font-size:20px;border-radius:30px;border:none;cursor:pointer;}
-#shopLogin{background:white;color:black;}
-.shop-btn{background:black;color:white;}
-#secretLogin,#valentine{background:linear-gradient(#ffe6f0,#ffffff);color:#ff4d88;}
-.confetti{position:fixed;top:-20px;font-size:24px;animation:fall 3s linear;}
-@keyframes fall{to{transform:translateY(110vh) rotate(360deg);}}
-#envelope{font-size:90px;cursor:pointer;}
-#letter{background:white;color:#ff4d88;padding:25px;border-radius:20px;font-size:20px;max-width:90%;}
-#puppy{font-size:90px;}
-</style>
-</head>
-<body>
-
-<div id="shopLogin" class="center">
-  <h1>ShopEase</h1>
-  <p>Login to continue shopping</p>
-  <input id="shopUser" placeholder="Username" />
-  <input id="shopPass" type="password" placeholder="Password" />
-  <button class="shop-btn" id="shopLoginBtn">Login</button>
-  <p id="shopError"></p>
-</div>
-
-<div id="secretLogin" class="center hidden">
-  <h1>💗 Login 💗</h1>
-  <p>Hint for username: our first date</p>
-  <p>Hint for password: my favorite thing</p>
-  <input id="secretUser" placeholder="Username" />
-  <input id="secretPass" type="password" placeholder="Password" />
-  <button id="secretLoginBtn">Login</button>
-  <p id="secretError"></p>
-</div>
-
-<div id="valentine" class="center hidden">
+<!-- Valentine Page -->
+<div id="valentine" class="hidden" style="background: linear-gradient(#ffe6f0, #ffffff); min-height: 100vh; padding-top: 60px; text-align: center; font-size: 36px; font-weight: bold; color: #ff4d88;">
   <h1>💘 Will you be my Valentine? 💘</h1>
-  <button id="yesBtn">YES 💖</button>
-  <button id="noBtn">NO</button>
-  <div id="result"></div>
+
+  <button id="yesBtn" style="font-size: 30px; padding: 15px 40px; margin: 20px; border-radius: 30px; background: #ff5fa2; color: white; border: none; cursor: pointer;">YES 💖</button>
+  <button id="noBtn" style="font-size: 30px; padding: 15px 40px; margin: 20px; border-radius: 30px; background: #ff5fa2; color: white; border: none; cursor: pointer;">NO 😒</button>
+
+  <div id="result" style="margin-top: 40px; font-size: 28px; font-weight: normal;"></div>
 </div>
+
+<style>
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+.confetti {
+  position: fixed;
+  top: -20px;
+  font-size: 24px;
+  animation: fall 3s linear forwards;
+  user-select: none;
+  pointer-events: none;
+}
+#envelope {
+  font-size: 90px;
+  cursor: pointer;
+  margin-top: 30px;
+  user-select: none;
+}
+#puppyEyes {
+  font-size: 90px;
+  user-select: none;
+}
+</style>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  let attempts = 0;
+document.getElementById("yesBtn").addEventListener("click", () => {
+  const result = document.getElementById("result");
+  result.innerHTML = ''; // Clear previous
 
-  const shopLoginBtn = document.getElementById("shopLoginBtn");
-  const secretLoginBtn = document.getElementById("secretLoginBtn");
-  const yesBtn = document.getElementById("yesBtn");
-  const noBtn = document.getElementById("noBtn");
+  createConfetti();
 
-  shopLoginBtn.addEventListener("click", function () {
-    const user = document.getElementById("shopUser").value;
-    const pass = document.getElementById("shopPass").value;
-    const err = document.getElementById("shopError");
+  // Show envelope with "Open" button
+  const envelope = document.createElement("div");
+  envelope.id = "envelope";
+  envelope.textContent = "✉️";
+  result.appendChild(envelope);
 
-    if (user === "admin" && pass === "admin") {
-      document.getElementById("shopLogin").classList.add("hidden");
-      document.getElementById("secretLogin").classList.remove("hidden");
-      err.innerText = "";
-    } else {
-      err.innerText = "Invalid login";
-    }
+  const openBtn = document.createElement("button");
+  openBtn.textContent = "Open";
+  openBtn.style.cssText = "font-size: 24px; margin-top: 20px; padding: 10px 30px; border-radius: 20px; background: #ff5fa2; color: white; border: none; cursor: pointer;";
+  result.appendChild(openBtn);
+
+  openBtn.addEventListener("click", () => {
+    result.innerHTML = `
+      <div style="background: #fff0f5; padding: 30px; border-radius: 20px; color: #ff4d88; font-size: 24px; line-height: 1.4; user-select: none;">
+        Hey Your highness 👑,<br><br>
+        so how’s my proposal?<br>
+        Thanks for making me the happiest person choosing me.<br><br>
+        It’s my first time asking to be someone’s Valentine 💌.<br><br>
+        Thanks for saying yes 🥰.<br><br>
+        I LOVE U ❤️ and I will make sure you have an amazing Valentine date! 🌸
+      </div>
+    `;
   });
-
-  secretLoginBtn.addEventListener("click", function () {
-    const user = document.getElementById("secretUser").value;
-    const pass = document.getElementById("secretPass").value;
-    const err = document.getElementById("secretError");
-
-    if (user === "Tankbund" && pass === "Sathvik") {
-      document.getElementById("secretLogin").classList.add("hidden");
-      document.getElementById("valentine").classList.remove("hidden");
-      err.innerText = "";
-    } else {
-      attempts++;
-      if (attempts >= 3) {
-        err.innerHTML = "u stupid 😤<br>Username: <b>Tankbund</b><br>Password: <b>Sathvik</b>";
-      } else {
-        err.innerText = "Wrong. Try again.";
-      }
-    }
-  });
-
-  yesBtn.addEventListener("click", function () {
-    createConfetti();
-    const result = document.getElementById("result");
-    result.innerHTML = `<div id="envelope">✉️</div><p>Tap the envelope</p>`;
-    document.getElementById("envelope").onclick = function () {
-      result.innerHTML = `<div id="letter">
-Hey Your highness 👑<br><br>
-so hows my proposal 💕<br><br>
-thanks for making me the happiest person choosing me 💖<br><br>
-its my first time asking to be someone valentines 💌<br><br>
-and thanks for saying yes 🥰<br><br>
-I LOVE U ❤️<br><br>
-and i will make sure You have amazing valentine date 🌸
-</div>`;
-    };
-  });
-
-  noBtn.addEventListener("click", function () {
-    const result = document.getElementById("result");
-    result.innerHTML = `<div id="puppy">🥺</div><p>u dont love me?</p>`;
-  });
-
-  function createConfetti() {
-    for (let i = 0; i < 40; i++) {
-      const c = document.createElement("div");
-      c.className = "confetti";
-      c.innerText = "💖";
-      c.style.left = Math.random() * 100 + "vw";
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 3000);
-    }
-  }
 });
-</script>
-</body>
-</html>
 
+document.getElementById("noBtn").addEventListener("click", () => {
+  const result = document.getElementById("result");
+  result.innerHTML = `
+    <div id="puppyEyes">🥺</div>
+    <div style="font-size: 28px; color: #ff5fa2; margin-top: 15px;">u don't love me?</div>
+  `;
+});
+
+function createConfetti() {
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.textContent = "💖";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.animationDuration = (2 + Math.random() * 2) + "s";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3500);
+  }
+}
+</script>
