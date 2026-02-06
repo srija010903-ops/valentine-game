@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ShopEase</title>
 <style>
 body { margin:0; font-family: Arial,sans-serif; text-align:center;}
@@ -24,83 +24,80 @@ button{padding:14px 30px;font-size:20px;border-radius:30px;border:none;cursor:po
 </head>
 <body>
 
-<!-- SHOP LOGIN -->
 <div id="shopLogin" class="center">
-<h1>ShopEase</h1>
-<p>Login to continue shopping</p>
-<input id="shopUser" placeholder="Username">
-<input id="shopPass" type="password" placeholder="Password">
-<button class="shop-btn" id="shopLoginBtn">Login</button>
-<p id="shopError"></p>
+  <h1>ShopEase</h1>
+  <p>Login to continue shopping</p>
+  <input id="shopUser" placeholder="Username" />
+  <input id="shopPass" type="password" placeholder="Password" />
+  <button class="shop-btn" id="shopLoginBtn">Login</button>
+  <p id="shopError"></p>
 </div>
 
-<!-- SECRET LOGIN -->
 <div id="secretLogin" class="center hidden">
-<h1>💗 Login 💗</h1>
-<p>Hint for username: our first date</p>
-<p>Hint for password: my favorite thing</p>
-<input id="secretUser" placeholder="Username">
-<input id="secretPass" type="password" placeholder="Password">
-<button id="secretLoginBtn">Login</button>
-<p id="secretError"></p>
+  <h1>💗 Login 💗</h1>
+  <p>Hint for username: our first date</p>
+  <p>Hint for password: my favorite thing</p>
+  <input id="secretUser" placeholder="Username" />
+  <input id="secretPass" type="password" placeholder="Password" />
+  <button id="secretLoginBtn">Login</button>
+  <p id="secretError"></p>
 </div>
 
-<!-- VALENTINE -->
 <div id="valentine" class="center hidden">
-<h1>💘 Will you be my Valentine? 💘</h1>
-<button id="yesBtn">YES 💖</button>
-<button id="noBtn">NO</button>
-<div id="result"></div>
+  <h1>💘 Will you be my Valentine? 💘</h1>
+  <button id="yesBtn">YES 💖</button>
+  <button id="noBtn">NO</button>
+  <div id="result"></div>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  let attempts=0;
+document.addEventListener("DOMContentLoaded", function () {
+  let attempts = 0;
 
-  const shopLoginBtn=document.getElementById("shopLoginBtn");
-  const secretLoginBtn=document.getElementById("secretLoginBtn");
-  const yesBtn=document.getElementById("yesBtn");
-  const noBtn=document.getElementById("noBtn");
+  const shopLoginBtn = document.getElementById("shopLoginBtn");
+  const secretLoginBtn = document.getElementById("secretLoginBtn");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
 
-  shopLoginBtn.addEventListener("click", function(){
-    const user=document.getElementById("shopUser").value;
-    const pass=document.getElementById("shopPass").value;
-    const err=document.getElementById("shopError");
+  shopLoginBtn.addEventListener("click", function () {
+    const user = document.getElementById("shopUser").value;
+    const pass = document.getElementById("shopPass").value;
+    const err = document.getElementById("shopError");
 
-    if(user === "admin" && pass === "admin"){
+    if (user === "admin" && pass === "admin") {
       document.getElementById("shopLogin").classList.add("hidden");
       document.getElementById("secretLogin").classList.remove("hidden");
-      err.innerText="";
-    }else{
-      err.innerText="Invalid login";
+      err.innerText = "";
+    } else {
+      err.innerText = "Invalid login";
     }
   });
 
-  secretLoginBtn.addEventListener("click", function(){
-    const user=document.getElementById("secretUser").value;
-    const pass=document.getElementById("secretPass").value;
-    const err=document.getElementById("secretError");
+  secretLoginBtn.addEventListener("click", function () {
+    const user = document.getElementById("secretUser").value;
+    const pass = document.getElementById("secretPass").value;
+    const err = document.getElementById("secretError");
 
-    if(user === "Tankbund" && pass === "Sathvik"){
+    if (user === "Tankbund" && pass === "Sathvik") {
       document.getElementById("secretLogin").classList.add("hidden");
       document.getElementById("valentine").classList.remove("hidden");
-      err.innerText="";
-    }else{
+      err.innerText = "";
+    } else {
       attempts++;
-      if(attempts>=3){
-        err.innerHTML="u stupid 😤<br>Username: <b>Tankbund</b><br>Password: <b>Sathvik</b>";
-      }else{
-        err.innerText="Wrong. Try again.";
+      if (attempts >= 3) {
+        err.innerHTML = "u stupid 😤<br>Username: <b>Tankbund</b><br>Password: <b>Sathvik</b>";
+      } else {
+        err.innerText = "Wrong. Try again.";
       }
     }
   });
 
-  yesBtn.addEventListener("click", function(){
+  yesBtn.addEventListener("click", function () {
     createConfetti();
-    const result=document.getElementById("result");
-    result.innerHTML=`<div id="envelope">✉️</div><p>Tap the envelope</p>`;
-    document.getElementById("envelope").onclick=function(){
-      result.innerHTML=`<div id="letter">
+    const result = document.getElementById("result");
+    result.innerHTML = `<div id="envelope">✉️</div><p>Tap the envelope</p>`;
+    document.getElementById("envelope").onclick = function () {
+      result.innerHTML = `<div id="letter">
 Hey Your highness 👑<br><br>
 so hows my proposal 💕<br><br>
 thanks for making me the happiest person choosing me 💖<br><br>
@@ -112,23 +109,23 @@ and i will make sure You have amazing valentine date 🌸
     };
   });
 
-  noBtn.addEventListener("click", function(){
-    const result=document.getElementById("result");
-    result.innerHTML=`<div id="puppy">🥺</div><p>u dont love me?</p>`;
+  noBtn.addEventListener("click", function () {
+    const result = document.getElementById("result");
+    result.innerHTML = `<div id="puppy">🥺</div><p>u dont love me?</p>`;
   });
 
-  function createConfetti(){
-    for(let i=0;i<40;i++){
-      const c=document.createElement("div");
-      c.className="confetti";
-      c.innerText="💖";
-      c.style.left=Math.random()*100+"vw";
+  function createConfetti() {
+    for (let i = 0; i < 40; i++) {
+      const c = document.createElement("div");
+      c.className = "confetti";
+      c.innerText = "💖";
+      c.style.left = Math.random() * 100 + "vw";
       document.body.appendChild(c);
-      setTimeout(()=>c.remove(),3000);
+      setTimeout(() => c.remove(), 3000);
     }
   }
 });
 </script>
-
 </body>
 </html>
+
