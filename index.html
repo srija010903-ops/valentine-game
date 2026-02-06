@@ -5,227 +5,166 @@
 <title>PinkCart 🛍️</title>
 
 <style>
-  body {
-    font-family: "Comic Sans MS", Arial, sans-serif;
-    background: #fff;
-    text-align: center;
-    padding: 20px;
-    color: #333;
-  }
+body {
+  font-family: "Comic Sans MS", Arial, sans-serif;
+  background: #fff;
+  text-align: center;
+  padding: 20px;
+}
 
-  .hidden { display: none; }
+.hidden { display: none; }
 
-  h1 {
-    color: #ff5fa2;
-  }
+h1 { color: #ff5fa2; }
 
-  input {
-    padding: 10px;
-    margin: 10px;
-    width: 80%;
-    max-width: 300px;
-    border-radius: 10px;
-    border: 1px solid #ffb6d9;
-  }
+input {
+  padding: 10px;
+  margin: 10px;
+  width: 80%;
+  max-width: 300px;
+  border-radius: 10px;
+  border: 1px solid #ffb6d9;
+}
 
-  button {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 20px;
-    background: #ff5fa2;
-    color: white;
-    font-size: 16px;
-    margin-top: 15px;
-    cursor: pointer;
-  }
+button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 20px;
+  background: #ff5fa2;
+  color: white;
+  font-size: 16px;
+  margin-top: 15px;
+}
 
-  #valentine {
-    background: linear-gradient(#ffe6f0, #ffffff);
-    min-height: 100vh;
-    padding-top: 60px;
-    text-align: center;
-    font-size: 36px;
-    font-weight: bold;
-    color: #ff4d88;
-  }
+#valentine {
+  background: linear-gradient(#ffe6f0, #ffffff);
+  min-height: 100vh;
+  padding-top: 60px;
+}
 
-  /* Confetti animation */
-  @keyframes fall {
-    to {
-      transform: translateY(110vh) rotate(360deg);
-      opacity: 0;
-    }
-  }
-  .confetti {
-    position: fixed;
-    top: -20px;
-    font-size: 24px;
-    animation: fall 3s linear forwards;
-    user-select: none;
-    pointer-events: none;
-  }
-  #envelope {
-    font-size: 90px;
-    cursor: pointer;
-    margin-top: 30px;
-    user-select: none;
-  }
-  #puppyEyes {
-    font-size: 90px;
-    user-select: none;
-  }
+.angry { font-size: 40px; }
 </style>
 </head>
 
 <body>
 
+<!-- Shopping Home -->
+<div id="shop">
+  <h1>🛍️ PinkCart</h1>
+  <p>Your favorite cute shopping destination 💕</p>
+  <button onclick="openShopLogin()">Sign Up / Login</button>
+</div>
+
 <!-- Shopping Login -->
-<div id="shopLogin">
-  <h1>🛍️ PinkCart - Shop Login</h1>
+<div id="shopLogin" class="hidden">
+  <h1>Shop Login</h1>
   <input id="shopUser" placeholder="Username">
   <input id="shopPass" type="password" placeholder="Password">
-  <button id="shopLoginBtn">Login</button>
-  <p id="shopError" style="color:red; font-weight:bold;"></p>
+  <button onclick="checkShop()">Login</button>
+  <p id="shopError"></p>
 </div>
 
 <!-- Secret Login -->
 <div id="secretLogin" class="hidden">
   <h1>Login 💗</h1>
-  <p><b>Hint for username:</b> our first date 💭</p>
-  <p><b>Hint for password:</b> my favorite thing 💖</p>
+  <p>Hint for username: our first date 💭</p>
+  <p>Hint for password: my favorite thing 💖</p>
 
   <input id="secretUser" placeholder="Username">
   <input id="secretPass" type="password" placeholder="Password">
-  <button id="secretLoginBtn">Login</button>
+  <button onclick="checkSecret()">Login</button>
 
-  <p id="secretError" style="color:red; font-weight:bold;"></p>
+  <p id="secretError"></p>
 </div>
 
 <!-- Valentine Page -->
 <div id="valentine" class="hidden">
   <h1>💘 Will you be my Valentine? 💘</h1>
 
-  <button id="yesBtn" style="font-size: 30px; padding: 15px 40px; margin: 20px; border-radius: 30px; background: #ff5fa2; color: white; border: none; cursor: pointer;">YES 💖</button>
-  <button id="noBtn" style="font-size: 30px; padding: 15px 40px; margin: 20px; border-radius: 30px; background: #ff5fa2; color: white; border: none; cursor: pointer;">NO 😒</button>
+  <button onclick="yes()">YES 💖</button>
+  <button onclick="no()">NO 😒</button>
 
-  <div id="result" style="margin-top: 40px; font-size: 28px; font-weight: normal;"></div>
+  <p id="result"></p>
 </div>
 
 <script>
-  // Shopping login logic
-  const shopLoginBtn = document.getElementById("shopLoginBtn");
-  const shopUser = document.getElementById("shopUser");
-  const shopPass = document.getElementById("shopPass");
-  const shopError = document.getElementById("shopError");
+let attempts = 0;
+let audioCtx;
+let musicInterval;
 
-  // Secret login logic
-  const secretLoginBtn = document.getElementById("secretLoginBtn");
-  const secretUser = document.getElementById("secretUser");
-  const secretPass = document.getElementById("secretPass");
-  const secretError = document.getElementById("secretError");
-  let secretAttempts = 0;
-
-  // Valentine page elements
-  const valentineDiv = document.getElementById("valentine");
-  const resultDiv = document.getElementById("result");
-  const yesBtn = document.getElementById("yesBtn");
-  const noBtn = document.getElementById("noBtn");
-
-  // Initial state: show shop login, hide others
+function openShopLogin() {
+  document.getElementById("shop").classList.add("hidden");
   document.getElementById("shopLogin").classList.remove("hidden");
-  document.getElementById("secretLogin").classList.add("hidden");
-  valentineDiv.classList.add("hidden");
+}
 
-  // Shopping login handler
-  shopLoginBtn.addEventListener("click", () => {
-    if (shopUser.value === "admin" && shopPass.value === "admin") {
-      // Clear error
-      shopError.textContent = "";
-      // Hide shopping login, show secret login
-      document.getElementById("shopLogin").classList.add("hidden");
-      document.getElementById("secretLogin").classList.remove("hidden");
-      // Clear secret login inputs & errors
-      secretUser.value = "";
-      secretPass.value = "";
-      secretError.textContent = "";
-      secretAttempts = 0;
+function checkShop() {
+  let u = document.getElementById("shopUser").value;
+  let p = document.getElementById("shopPass").value;
+
+  if (u === "admin" && p === "admin") {
+    document.getElementById("shopLogin").classList.add("hidden");
+    document.getElementById("secretLogin").classList.remove("hidden");
+  } else {
+    document.getElementById("shopError").innerText = "Invalid login 😒";
+  }
+}
+
+function checkSecret() {
+  let u = document.getElementById("secretUser").value;
+  let p = document.getElementById("secretPass").value;
+  let err = document.getElementById("secretError");
+
+  if (u === "Tankbund" && p === "Sathvik") {
+    document.getElementById("secretLogin").classList.add("hidden");
+    document.getElementById("valentine").classList.remove("hidden");
+    startCuteMusic();
+  } else {
+    attempts++;
+    if (attempts >= 3) {
+      err.innerHTML = "u stupid 😤<br>Username: <b>Tankbund</b><br>Password: <b>Sathvik</b>";
     } else {
-      shopError.textContent = "Invalid login 😒";
-    }
-  });
-
-  // Secret login handler
-  secretLoginBtn.addEventListener("click", () => {
-    const username = secretUser.value.trim();
-    const password = secretPass.value.trim();
-
-    if (username === "Tankbund" && password === "Sathvik") {
-      secretError.textContent = "";
-      // Hide secret login, show valentine page
-      document.getElementById("secretLogin").classList.add("hidden");
-      valentineDiv.classList.remove("hidden");
-      // Clear result area
-      resultDiv.innerHTML = "";
-    } else {
-      secretAttempts++;
-      if (secretAttempts >= 3) {
-        secretError.innerHTML = `u stupid 😤<br>Username: <b>Tankbund</b><br>Password: <b>Sathvik</b>`;
-      } else {
-        secretError.textContent = "Wrong 😒 Try again";
-      }
-    }
-  });
-
-  // Confetti animation helper
-  function createConfetti() {
-    for (let i = 0; i < 40; i++) {
-      const c = document.createElement("div");
-      c.className = "confetti";
-      c.textContent = "💖";
-      c.style.left = Math.random() * 100 + "vw";
-      c.style.animationDuration = (2 + Math.random() * 2) + "s";
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 3500);
+      err.innerText = "Wrong 😒 Try again";
     }
   }
+}
 
-  // YES button handler
-  yesBtn.addEventListener("click", () => {
-    resultDiv.innerHTML = ""; // Clear old
+/* 🎵 Cute background music */
+function startCuteMusic() {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    createConfetti();
+  musicInterval = setInterval(() => {
+    playNote(523.25, 0.15); // C
+    setTimeout(() => playNote(659.25, 0.15), 200); // E
+    setTimeout(() => playNote(783.99, 0.15), 400); // G
+  }, 2000);
+}
 
-    const envelope = document.createElement("div");
-    envelope.id = "envelope";
-    envelope.textContent = "✉️";
-    resultDiv.appendChild(envelope);
+function playNote(freq, duration) {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
 
-    const openBtn = document.createElement("button");
-    openBtn.textContent = "Open";
-    openBtn.style.cssText = "font-size: 24px; margin-top: 20px; padding: 10px 30px; border-radius: 20px; background: #ff5fa2; color: white; border: none; cursor: pointer;";
-    resultDiv.appendChild(openBtn);
+  osc.frequency.value = freq;
+  osc.type = "sine";
 
-    openBtn.addEventListener("click", () => {
-      resultDiv.innerHTML = `
-        <div style="background: #fff0f5; padding: 30px; border-radius: 20px; color: #ff4d88; font-size: 24px; line-height: 1.4; user-select: none;">
-          Hey Your highness 👑,<br><br>
-          so how’s my proposal?<br>
-          Thanks for making me the happiest person choosing me.<br><br>
-          It’s my first time asking to be someone’s Valentine 💌.<br><br>
-          Thanks for saying yes 🥰.<br><br>
-          I LOVE U ❤️ and I will make sure you have an amazing Valentine date! 🌸
-        </div>
-      `;
-    });
-  });
+  gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
 
-  // NO button handler
-  noBtn.addEventListener("click", () => {
-    resultDiv.innerHTML = `
-      <div id="puppyEyes">🥺</div>
-      <div style="font-size: 28px; color: #ff5fa2; margin-top: 15px;">u don't love me?</div>
-    `;
-  });
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
+
+function yes() {
+  document.getElementById("result").innerHTML =
+    "You have chosen the correct answer 🥰💖✨<br> Hey Your highness 👑,
+          so how’s my proposal? I coded after years so it its not upto mark let it slide. Thanks for making me the happiest person choosing me. It’s my first time asking to be someone’s Valentine 💌. Thanks for saying yes 🥰. I LOVE U ❤️ and I will make sure you have an amazing Valentine date! 🌸";
+}
+
+function no() {
+  document.getElementById("result").innerHTML =
+    "<span class='angry'>🥺 🥺 🥺 🥺 🥺 🥺 🥺 🥺 🥺 🥺 🥺 </span><br>DON'T U LOVE ME NEK NAA MEDHA FREMA TAGIPOTUNDHI";
+}
 </script>
 
 </body>
